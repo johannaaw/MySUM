@@ -1,28 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity2">
+    android:orientation="vertical"
+    android:background="#D8C3B6"
+    android:gravity="center"
+    android:padding="16dp">
+
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/mysum"
-        tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="214dp" />
+        app:srcCompat="@drawable/mysum" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="324dp"
-        android:layout_height="440dp"
-        android:background="#978860"
-        android:backgroundTint="#978860"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="259dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F4F1EF"
+        android:padding="24dp"
+        android:elevation="8dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="center"
+        android:backgroundTint="#FFFFFF"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
+        android:radius="32dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:textColor="#3E2F2D"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:backgroundTint="#D8C3B6"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Organization"
+            android:backgroundTint="#D8C3B6"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="city"
+            android:backgroundTint="#D8C3B6"
+            android:layout_marginBottom="24dp"
+            android:padding="12dp"
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:background="#4D4037"
+            android:textColor="#FFFFFF"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="12dp"
+            android:layout_gravity="center"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
