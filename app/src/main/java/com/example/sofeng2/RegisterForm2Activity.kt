@@ -2,17 +2,28 @@ package com.example.sofeng2
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.TextView
+import com.example.sofeng2.models.User
+import com.example.sofeng2.utils.JsonDatabaseHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegisterForm2Activity : AppCompatActivity() {
+    private lateinit var databaseHelper: JsonDatabaseHelper
+    private val TAG = "RegisterForm2Activity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_form2)
+
+        databaseHelper = JsonDatabaseHelper(this)
 
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val passwordInput = findViewById<TextInputEditText>(R.id.passwordInput)
@@ -51,12 +62,63 @@ class RegisterForm2Activity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Pass data to main activity
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("user_name", name)
+            // Show loading state
+            registerButton.isEnabled = false
+            registerButton.text = "Registering..."
+
+            // Create user object
+            val user = User(
+                name = name,
+                organization = organization,
+                city = city,
+                email = email,
+                password = password
+            )
+
+            // Register user
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    Log.d(TAG, "Starting registration process")
+                    val result = databaseHelper.registerUser(user)
+                    withContext(Dispatchers.Main) {
+                        result.fold(
+                            onSuccess = {
+                                Log.d(TAG, "Registration successful, navigating to MainActivity")
+                                // Registration successful
+                                val intent = Intent(this@RegisterForm2Activity, MainActivity::class.java).apply {
+                                    putExtra("user_name", name)
+                                }
+                                startActivity(intent)
+                                finish()
+                            },
+                            onFailure = { exception ->
+                                Log.e(TAG, "Registration failed", exception)
+                                // Registration failed
+                                Toast.makeText(
+                                    this@RegisterForm2Activity,
+                                    "Registration failed: ${exception.message}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                // Reset button state
+                                registerButton.isEnabled = true
+                                registerButton.text = "Register"
+                            }
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Unexpected error during registration", e)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            this@RegisterForm2Activity,
+                            "Error: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        // Reset button state
+                        registerButton.isEnabled = true
+                        registerButton.text = "Register"
+                    }
+                }
             }
-            startActivity(intent)
-            finish()
         }
 
         // Handle login link click

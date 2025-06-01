@@ -34,13 +34,8 @@ class OngoingActivity : AppCompatActivity() {
             adapter = this@OngoingActivity.adapter
         }
 
-        // Add sample data
-        val items = listOf(
-            OngoingItem("Storage 1", "2 days left", "Penghapus, Pensil"),
-            OngoingItem("Storage 2", "5 days left", "Buku, Pulpen"),
-            OngoingItem("Storage 3", "1 day left", "Stapler, Kertas")
-        )
-        adapter.submitList(items)
+        // Initialize with empty list
+        adapter.submitList(emptyList())
     }
 
     private fun setupBottomNavigation() {

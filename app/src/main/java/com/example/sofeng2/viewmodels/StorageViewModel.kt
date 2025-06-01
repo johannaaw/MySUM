@@ -18,35 +18,21 @@ class StorageViewModel : ViewModel() {
     val totalItems: LiveData<Int> = _totalItems
 
     init {
-        loadStorage1Items()
+        _items.value = emptyList()
         _cartItems.value = emptyList()
         updateTotalItems()
     }
 
     fun loadStorage1Items() {
-        val storage1Items = listOf(
-            StorageItem("Penghapus", "Faber Castell", 3, R.drawable.ic_eraser),
-            StorageItem("Pensil", "Faber Castell", 4, R.drawable.ic_pencil),
-            StorageItem("Penggaris", "Beautify 20cm", 1, R.drawable.ic_ruler),
-            StorageItem("Gunting", "Joker", 6, R.drawable.ic_scissors)
-        )
-        _items.value = storage1Items
+        _items.value = emptyList()
     }
 
     fun loadStorage2Items() {
-        val storage2Items = listOf(
-            StorageItem("Buku", "Sinar Dunia", 5, R.drawable.ic_book),
-            StorageItem("Pulpen", "Pilot", 8, R.drawable.ic_pen)
-        )
-        _items.value = storage2Items
+        _items.value = emptyList()
     }
 
     fun loadStorage3Items() {
-        val storage3Items = listOf(
-            StorageItem("Stapler", "Joyko", 2, R.drawable.ic_stapler),
-            StorageItem("Kertas", "HVS A4", 100, R.drawable.ic_paper)
-        )
-        _items.value = storage3Items
+        _items.value = emptyList()
     }
 
     fun addToCart(item: StorageItem, quantity: Int, storageName: String) {
@@ -74,34 +60,6 @@ class StorageViewModel : ViewModel() {
     }
 
     fun getStorageItems(storageId: Int): List<StorageItem> {
-        return when (storageId) {
-            0 -> getStorage1Items()
-            1 -> getStorage2Items()
-            2 -> getStorage3Items()
-            else -> getStorage1Items()
-        }
-    }
-
-    private fun getStorage1Items(): List<StorageItem> {
-        return listOf(
-            StorageItem("Penghapus", "Faber Castell", 3, R.drawable.ic_eraser),
-            StorageItem("Pensil", "Faber Castell", 4, R.drawable.ic_pencil),
-            StorageItem("Penggaris", "Beautify 20cm", 1, R.drawable.ic_ruler),
-            StorageItem("Gunting", "Joker", 6, R.drawable.ic_scissors)
-        )
-    }
-
-    private fun getStorage2Items(): List<StorageItem> {
-        return listOf(
-            StorageItem("Buku", "Sinar Dunia", 5, R.drawable.ic_book),
-            StorageItem("Pulpen", "Pilot", 8, R.drawable.ic_pen)
-        )
-    }
-
-    private fun getStorage3Items(): List<StorageItem> {
-        return listOf(
-            StorageItem("Stapler", "Joyko", 2, R.drawable.ic_stapler),
-            StorageItem("Kertas", "HVS A4", 100, R.drawable.ic_paper)
-        )
+        return emptyList()
     }
 } 

@@ -158,26 +158,15 @@ class StorageActivity : AppCompatActivity() {
     }
 
     private fun getSampleItems(): List<StorageItem> {
-        return listOf(
-            StorageItem("Penghapus", "Faber Castell", 3, R.drawable.ic_eraser),
-            StorageItem("Pensil", "Faber Castell", 4, R.drawable.ic_pencil),
-            StorageItem("Penggaris", "Beautify 20cm", 1, R.drawable.ic_ruler),
-            StorageItem("Gunting", "Joker", 6, R.drawable.ic_scissors)
-        )
+        return emptyList()
     }
 
     private fun getStorage2Items(): List<StorageItem> {
-        return listOf(
-            StorageItem("Buku", "Sinar Dunia", 5, R.drawable.ic_book),
-            StorageItem("Pulpen", "Pilot", 8, R.drawable.ic_pen)
-        )
+        return emptyList()
     }
 
     private fun getStorage3Items(): List<StorageItem> {
-        return listOf(
-            StorageItem("Stapler", "Joyko", 2, R.drawable.ic_stapler),
-            StorageItem("Kertas", "HVS A4", 100, R.drawable.ic_paper)
-        )
+        return emptyList()
     }
 }
 
