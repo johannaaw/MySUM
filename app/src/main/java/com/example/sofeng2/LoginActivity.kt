@@ -27,6 +27,18 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Validate email format
+            if (!emailPhone.contains("@")) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validate password length
+            if (password.length < 8) {
+                Toast.makeText(this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             // TODO: Implement actual login logic here
             // For now, just navigate to main activity
             startActivity(Intent(this, MainActivity::class.java))

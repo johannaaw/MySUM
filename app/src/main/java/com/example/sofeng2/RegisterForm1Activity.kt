@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import android.widget.TextView
 
 class RegisterForm1Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +17,12 @@ class RegisterForm1Activity : AppCompatActivity() {
         val organizationInput = findViewById<TextInputEditText>(R.id.organizationInput)
         val cityInput = findViewById<TextInputEditText>(R.id.cityInput)
         val nextButton = findViewById<MaterialButton>(R.id.nextButton)
+        val loginLink = findViewById<TextView>(R.id.loginLink)
+
+        loginLink.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         nextButton.setOnClickListener {
             val name = nameInput.text.toString()
@@ -24,6 +31,12 @@ class RegisterForm1Activity : AppCompatActivity() {
 
             if (name.isBlank() || organization.isBlank() || city.isBlank()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Validate name doesn't contain numbers
+            if (name.any { it.isDigit() }) {
+                Toast.makeText(this, "Name should not contain numbers", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

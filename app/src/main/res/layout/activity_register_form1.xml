@@ -119,6 +119,18 @@
                     app:cornerRadius="24dp"
                     android:backgroundTint="#2C2C2C" />
 
+                <TextView
+                    android:id="@+id/loginLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:text="Already have an account? Login"
+                    android:textColor="#2C2C2C"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

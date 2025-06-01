@@ -46,14 +46,19 @@
         <activity
             android:name=".StorageActivity"
             android:exported="false"
-            android:theme="@style/Theme.MySUM" />
+            android:theme="@style/Theme.MySUM.NoActionBar" />
         <activity
             android:name=".CheckoutActivity"
             android:exported="false"
-            android:theme="@style/Theme.MySUM"/>
+            android:theme="@style/Theme.MySUM.NoActionBar" />
         <activity
             android:name=".OngoingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.MySUM.NoActionBar" />
+        <activity
+            android:name=".CalendarActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MySUM.NoActionBar" />
     </application>
 
 </manifest>

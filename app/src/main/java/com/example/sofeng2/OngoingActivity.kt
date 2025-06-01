@@ -4,17 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sofeng2.data.BorrowManager
-import com.example.sofeng2.models.BorrowData
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.tabs.TabLayout
-import java.text.SimpleDateFormat
-import java.util.*
 
 class OngoingActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: OngoingAdapter
-    private lateinit var tabLayout: TabLayout
     private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,92 +16,54 @@ class OngoingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ongoing)
 
         // Initialize views
-        recyclerView = findViewById(R.id.ongoingRecyclerView)
-        adapter = OngoingAdapter()
-        tabLayout = findViewById(R.id.tabLayout)
         bottomNavigation = findViewById(R.id.bottomNavigation)
+        recyclerView = findViewById(R.id.ongoingRecyclerView)
 
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = OngoingAdapter(getSampleOngoingItems())
         recyclerView.adapter = adapter
-
-        // Setup TabLayout
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> adapter.showAllBorrows()
-                    1 -> adapter.showActiveBorrows()
-                    2 -> adapter.showCompletedBorrows()
-                }
-            }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-
-        // Load data
-        loadBorrowData()
 
         // Setup Bottom Navigation
         NavigationHandler.setupBottomNavigation(this, bottomNavigation)
         
-        // Set the history item as selected
-        bottomNavigation.selectedItemId = R.id.navigation_history
+        // Set the ongoing tab as selected
+        bottomNavigation.selectedItemId = R.id.navigation_ongoing
     }
 
-    private fun loadBorrowData() {
-        val borrows = BorrowManager.getOngoingBorrows()
-        adapter.submitList(borrows)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadBorrowData()
+    private fun getSampleOngoingItems(): List<OngoingItem> {
+        return listOf(
+            OngoingItem(
+                "Peminjaman Alat Tulis",
+                "Storage 1",
+                "2 hari tersisa",
+                listOf("Pensil x2", "Penghapus x1")
+            ),
+            OngoingItem(
+                "Peminjaman Buku",
+                "Storage 2",
+                "5 hari tersisa",
+                listOf("Buku Matematika x1", "Buku Fisika x1")
+            )
+        )
     }
 }
 
-class OngoingAdapter : RecyclerView.Adapter<OngoingAdapter.ViewHolder>() {
-    private var allBorrows = listOf<BorrowData>()
-    private var currentFilter = Filter.ALL
+data class OngoingItem(
+    val title: String,
+    val storageName: String,
+    val timeLeft: String,
+    val items: List<String>
+)
 
-    enum class Filter {
-        ALL, ACTIVE, COMPLETED
-    }
-
-    fun submitList(borrows: List<BorrowData>) {
-        allBorrows = borrows
-        filterBorrows()
-    }
-
-    fun showAllBorrows() {
-        currentFilter = Filter.ALL
-        filterBorrows()
-    }
-
-    fun showActiveBorrows() {
-        currentFilter = Filter.ACTIVE
-        filterBorrows()
-    }
-
-    fun showCompletedBorrows() {
-        currentFilter = Filter.COMPLETED
-        filterBorrows()
-    }
-
-    private fun filterBorrows() {
-        val currentTime = Date()
-        val filteredList = when (currentFilter) {
-            Filter.ALL -> allBorrows
-            Filter.ACTIVE -> allBorrows.filter { it.returnDate.after(currentTime) }
-            Filter.COMPLETED -> allBorrows.filter { it.returnDate.before(currentTime) }
-        }
-        notifyDataSetChanged()
-    }
+class OngoingAdapter(private val items: List<OngoingItem>) : 
+    RecyclerView.Adapter<OngoingAdapter.ViewHolder>() {
 
     class ViewHolder(view: android.view.View) : RecyclerView.ViewHolder(view) {
-        val storageName: android.widget.TextView = view.findViewById(R.id.storageName)
-        val timeLeft: android.widget.TextView = view.findViewById(R.id.timeLeft)
-        val itemName: android.widget.TextView = view.findViewById(R.id.itemName)
-        val itemQuantity: android.widget.TextView = view.findViewById(R.id.itemQuantity)
+        val title: android.widget.TextView = view.findViewById(R.id.ongoingTitle)
+        val storage: android.widget.TextView = view.findViewById(R.id.ongoingStorage)
+        val timeLeft: android.widget.TextView = view.findViewById(R.id.ongoingTimeLeft)
+        val itemsList: android.widget.TextView = view.findViewById(R.id.ongoingItems)
     }
 
     override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ViewHolder {
@@ -117,26 +73,12 @@ class OngoingAdapter : RecyclerView.Adapter<OngoingAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val borrow = allBorrows[position]
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        
-        // Set storage name (using purpose as storage name for now)
-        holder.storageName.text = borrow.purpose
-
-        // Calculate time left
-        val currentTime = Date()
-        val timeLeft = borrow.returnDate.time - currentTime.time
-        val daysLeft = timeLeft / (1000 * 60 * 60 * 24)
-        val hoursLeft = (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        holder.timeLeft.text = "${daysLeft}d ${hoursLeft}h left"
-
-        // Set first item details
-        if (borrow.items.isNotEmpty()) {
-            val firstItem = borrow.items[0]
-            holder.itemName.text = firstItem.name
-            holder.itemQuantity.text = firstItem.quantity.toString()
-        }
+        val item = items[position]
+        holder.title.text = item.title
+        holder.storage.text = item.storageName
+        holder.timeLeft.text = item.timeLeft
+        holder.itemsList.text = item.items.joinToString("\n")
     }
 
-    override fun getItemCount() = allBorrows.size
+    override fun getItemCount() = items.size
 } 

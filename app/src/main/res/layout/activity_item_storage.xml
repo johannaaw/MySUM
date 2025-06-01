@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="Sandy Agatha"
+                        android:text="User"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
@@ -83,49 +83,12 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- My Storage Section -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.MySUM.Card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_warehouse"
-                        app:tint="@color/text_primary" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_weight="1"
-                        android:text="My Storage"
-                        android:textAppearance="@style/TextAppearance.MySUM.Title" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/viewMoreButton"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="View More →"
-                        android:textColor="@color/text_secondary" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Ongoing List Section -->
+            <!-- Storage List Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Ongoing List"
+                android:text="Storage List"
                 android:textAppearance="@style/TextAppearance.MySUM.Title" />
 
             <!-- Storage Card 1 -->

@@ -2,6 +2,7 @@ package com.example.sofeng2
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,46 +21,64 @@ class CheckoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkout)
 
-        val borrowPurposeInput = findViewById<TextInputEditText>(R.id.borrowPurposeInput)
-        val waInput = findViewById<TextInputEditText>(R.id.waInput)
-        val lineInput = findViewById<TextInputEditText>(R.id.lineInput)
-        val borrowDateInput = findViewById<TextInputEditText>(R.id.borrowDateInput)
-        val returnDateInput = findViewById<TextInputEditText>(R.id.returnDateInput)
-        val borrowButton = findViewById<MaterialButton>(R.id.borrowButton)
-        borrowSummaryRecyclerView = findViewById(R.id.borrowSummaryRecyclerView)
+        try {
+            // Ambil data cart dari intent
+            val cartNames = intent.getStringArrayListExtra("cartNames")
+            val cartQuantities = intent.getIntegerArrayListExtra("cartQuantities")
 
-        // Ambil data cart dari intent
-        val cartNames = intent.getStringArrayListExtra("cartNames") ?: arrayListOf()
-        val cartQuantities = intent.getIntegerArrayListExtra("cartQuantities") ?: arrayListOf()
-        for (i in cartNames.indices) {
-            borrowItems.add(BorrowItem(cartNames[i], cartQuantities.getOrElse(i) { 1 }))
-        }
-        adapter = BorrowSummaryAdapter(borrowItems)
-        borrowSummaryRecyclerView.layoutManager = LinearLayoutManager(this)
-        borrowSummaryRecyclerView.adapter = adapter
-
-        // Date pickers
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        borrowDateInput.setOnClickListener {
-            showDatePicker { date -> borrowDateInput.setText(dateFormat.format(date)) }
-        }
-        returnDateInput.setOnClickListener {
-            showDatePicker { date -> returnDateInput.setText(dateFormat.format(date)) }
-        }
-
-        borrowButton.setOnClickListener {
-            val purpose = borrowPurposeInput.text.toString().trim()
-            val wa = waInput.text.toString().trim()
-            val line = lineInput.text.toString().trim()
-            val borrowDate = borrowDateInput.text.toString().trim()
-            val returnDate = returnDateInput.text.toString().trim()
-            if (purpose.isEmpty() || wa.isEmpty() || borrowDate.isEmpty() || returnDate.isEmpty()) {
-                Toast.makeText(this, "Lengkapi semua field wajib!", Toast.LENGTH_SHORT).show()
-            } else {
-                // TODO: Simpan data peminjaman ke sistem/database
-                Toast.makeText(this, "Peminjaman berhasil!", Toast.LENGTH_SHORT).show()
+            if (cartNames == null || cartQuantities == null) {
+                Log.e("CheckoutActivity", "Missing cart data in intent")
+                Toast.makeText(this, "Error: Missing cart data", Toast.LENGTH_SHORT).show()
                 finish()
+                return
             }
+
+            Log.d("CheckoutActivity", "Received cart data: names=$cartNames, quantities=$cartQuantities")
+
+            // Setup UI
+            val borrowPurposeInput = findViewById<TextInputEditText>(R.id.borrowPurposeInput)
+            val waInput = findViewById<TextInputEditText>(R.id.waInput)
+            val lineInput = findViewById<TextInputEditText>(R.id.lineInput)
+            val borrowDateInput = findViewById<TextInputEditText>(R.id.borrowDateInput)
+            val returnDateInput = findViewById<TextInputEditText>(R.id.returnDateInput)
+            val borrowButton = findViewById<MaterialButton>(R.id.borrowButton)
+            borrowSummaryRecyclerView = findViewById(R.id.borrowSummaryRecyclerView)
+
+            // Setup RecyclerView
+            for (i in cartNames.indices) {
+                borrowItems.add(BorrowItem(cartNames[i], cartQuantities.getOrElse(i) { 1 }))
+            }
+            adapter = BorrowSummaryAdapter(borrowItems)
+            borrowSummaryRecyclerView.layoutManager = LinearLayoutManager(this)
+            borrowSummaryRecyclerView.adapter = adapter
+
+            // Date pickers
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            borrowDateInput.setOnClickListener {
+                showDatePicker { date -> borrowDateInput.setText(dateFormat.format(date)) }
+            }
+            returnDateInput.setOnClickListener {
+                showDatePicker { date -> returnDateInput.setText(dateFormat.format(date)) }
+            }
+
+            borrowButton.setOnClickListener {
+                val purpose = borrowPurposeInput.text.toString().trim()
+                val wa = waInput.text.toString().trim()
+                val line = lineInput.text.toString().trim()
+                val borrowDate = borrowDateInput.text.toString().trim()
+                val returnDate = returnDateInput.text.toString().trim()
+                if (purpose.isEmpty() || wa.isEmpty() || borrowDate.isEmpty() || returnDate.isEmpty()) {
+                    Toast.makeText(this, "Lengkapi semua field wajib!", Toast.LENGTH_SHORT).show()
+                } else {
+                    // TODO: Simpan data peminjaman ke sistem/database
+                    Toast.makeText(this, "Peminjaman berhasil!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("CheckoutActivity", "Error in onCreate: ${e.message}", e)
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 

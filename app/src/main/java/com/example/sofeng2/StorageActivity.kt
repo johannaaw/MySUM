@@ -53,15 +53,22 @@ class StorageActivity : AppCompatActivity() {
         // Setup Checkout Button
         cartCheckOutButton = cartPopup.findViewById<MaterialButton>(R.id.checkoutButton)
         cartCheckOutButton.setOnClickListener {
-            // Navigasi ke CheckoutActivity, kirim daftar nama dan jumlah barang di cart
-            val cartNames = ArrayList(cartItems.map { it.name })
-            val cartQuantities = ArrayList(cartItems.map { it.quantity })
-            val intent = Intent(this, CheckoutActivity::class.java)
-            intent.putStringArrayListExtra("cartNames", cartNames)
-            intent.putIntegerArrayListExtra("cartQuantities", cartQuantities)
-            startActivity(intent)
-            finish()
-            cartPopup.visibility = View.GONE
+            if (cartItems.isNotEmpty()) {
+                try {
+                    // Navigasi ke CheckoutActivity, kirim daftar nama dan jumlah barang di cart
+                    val cartNames = ArrayList(cartItems.map { it.name })
+                    val cartQuantities = ArrayList(cartItems.map { it.quantity })
+                    val intent = Intent(this, CheckoutActivity::class.java).apply {
+                        putStringArrayListExtra("cartNames", cartNames)
+                        putIntegerArrayListExtra("cartQuantities", cartQuantities)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    startActivity(intent)
+                    cartPopup.visibility = View.GONE
+                } catch (e: Exception) {
+                    android.util.Log.e("StorageActivity", "Error starting CheckoutActivity: ${e.message}", e)
+                }
+            }
         }
 
         // Setup TabLayout
