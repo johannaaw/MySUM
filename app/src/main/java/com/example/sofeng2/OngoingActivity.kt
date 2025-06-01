@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sofeng2.R
+import com.example.sofeng2.utils.NavigationHandler
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OngoingActivity : AppCompatActivity() {
@@ -16,51 +18,51 @@ class OngoingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ongoing)
 
         // Initialize views
-        bottomNavigation = findViewById(R.id.bottomNavigation)
         recyclerView = findViewById(R.id.ongoingRecyclerView)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
-        // Setup RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = OngoingAdapter(getSampleOngoingItems())
-        recyclerView.adapter = adapter
-
-        // Setup Bottom Navigation
-        NavigationHandler.setupBottomNavigation(this, bottomNavigation)
-        
-        // Set the ongoing tab as selected
-        bottomNavigation.selectedItemId = R.id.navigation_ongoing
+        setupRecyclerView()
+        setupBottomNavigation()
     }
 
-    private fun getSampleOngoingItems(): List<OngoingItem> {
-        return listOf(
-            OngoingItem(
-                "Peminjaman Alat Tulis",
-                "Storage 1",
-                "2 hari tersisa",
-                listOf("Pensil x2", "Penghapus x1")
-            ),
-            OngoingItem(
-                "Peminjaman Buku",
-                "Storage 2",
-                "5 hari tersisa",
-                listOf("Buku Matematika x1", "Buku Fisika x1")
-            )
+    private fun setupRecyclerView() {
+        adapter = OngoingAdapter()
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@OngoingActivity)
+            adapter = this@OngoingActivity.adapter
+        }
+
+        // Add sample data
+        val items = listOf(
+            OngoingItem("Storage 1", "2 days left", "Penghapus, Pensil"),
+            OngoingItem("Storage 2", "5 days left", "Buku, Pulpen"),
+            OngoingItem("Storage 3", "1 day left", "Stapler, Kertas")
         )
+        adapter.submitList(items)
+    }
+
+    private fun setupBottomNavigation() {
+        NavigationHandler.setupBottomNavigation(this, bottomNavigation)
+        bottomNavigation.selectedItemId = R.id.navigation_ongoing
     }
 }
 
 data class OngoingItem(
-    val title: String,
     val storageName: String,
     val timeLeft: String,
-    val items: List<String>
+    val items: String
 )
 
-class OngoingAdapter(private val items: List<OngoingItem>) : 
-    RecyclerView.Adapter<OngoingAdapter.ViewHolder>() {
+class OngoingAdapter : RecyclerView.Adapter<OngoingAdapter.ViewHolder>() {
+    private val items = mutableListOf<OngoingItem>()
+
+    fun submitList(newItems: List<OngoingItem>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(view: android.view.View) : RecyclerView.ViewHolder(view) {
-        val title: android.widget.TextView = view.findViewById(R.id.ongoingTitle)
         val storage: android.widget.TextView = view.findViewById(R.id.ongoingStorage)
         val timeLeft: android.widget.TextView = view.findViewById(R.id.ongoingTimeLeft)
         val itemsList: android.widget.TextView = view.findViewById(R.id.ongoingItems)
@@ -74,10 +76,9 @@ class OngoingAdapter(private val items: List<OngoingItem>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.title.text = item.title
         holder.storage.text = item.storageName
         holder.timeLeft.text = item.timeLeft
-        holder.itemsList.text = item.items.joinToString("\n")
+        holder.itemsList.text = item.items
     }
 
     override fun getItemCount() = items.size

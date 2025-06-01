@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sofeng2.R
+import com.example.sofeng2.utils.NavigationHandler
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -32,46 +34,63 @@ class StorageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_storage)
 
         // Initialize views
+        recyclerView = findViewById(R.id.itemsRecyclerView)
+        cartPopup = findViewById(R.id.cartPopup)
+        cartRecyclerView = cartPopup.findViewById(R.id.cartRecyclerView)
+        cartCheckOutButton = cartPopup.findViewById(R.id.checkoutButton)
+        totalItemsText = cartPopup.findViewById(R.id.totalItemsText)
         bottomNavigation = findViewById(R.id.bottomNavigation)
 
-        // Setup RecyclerView
-        recyclerView = findViewById(R.id.itemsRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        setupRecyclerViews()
+        setupBottomNavigation()
+        setupCartButton()
+        setupTabLayout()
+    }
+
+    private fun setupRecyclerViews() {
+        // Setup Storage Items RecyclerView
         adapter = StorageItemAdapter(getSampleItems()) { item ->
             showQuantityDialog(item)
         }
-        recyclerView.adapter = adapter
-
-        // Setup Cart Popup (ambil dari layout utama, bukan inflate)
-        cartPopup = findViewById(R.id.cartPopup)
-        cartRecyclerView = cartPopup.findViewById(R.id.cartRecyclerView)
-        cartRecyclerView.layoutManager = LinearLayoutManager(this)
-        cartAdapter = CartAdapter(cartItems)
-        cartRecyclerView.adapter = cartAdapter
-        totalItemsText = cartPopup.findViewById(R.id.totalItemsText)
-
-        // Setup Checkout Button
-        cartCheckOutButton = cartPopup.findViewById<MaterialButton>(R.id.checkoutButton)
-        cartCheckOutButton.setOnClickListener {
-            if (cartItems.isNotEmpty()) {
-                try {
-                    // Navigasi ke CheckoutActivity, kirim daftar nama dan jumlah barang di cart
-                    val cartNames = ArrayList(cartItems.map { it.name })
-                    val cartQuantities = ArrayList(cartItems.map { it.quantity })
-                    val intent = Intent(this, CheckoutActivity::class.java).apply {
-                        putStringArrayListExtra("cartNames", cartNames)
-                        putIntegerArrayListExtra("cartQuantities", cartQuantities)
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    startActivity(intent)
-                    cartPopup.visibility = View.GONE
-                } catch (e: Exception) {
-                    android.util.Log.e("StorageActivity", "Error starting CheckoutActivity: ${e.message}", e)
-                }
-            }
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@StorageActivity)
+            adapter = this@StorageActivity.adapter
         }
 
-        // Setup TabLayout
+        // Setup Cart RecyclerView
+        cartAdapter = CartAdapter(cartItems)
+        cartRecyclerView.apply {
+            layoutManager = LinearLayoutManager(this@StorageActivity)
+            adapter = this@StorageActivity.cartAdapter
+        }
+
+        // Setup Checkout Button
+        cartCheckOutButton.setOnClickListener {
+            if (cartItems.isNotEmpty()) {
+                val cartNames = ArrayList(cartItems.map { it.name })
+                val cartQuantities = ArrayList(cartItems.map { it.quantity })
+                val intent = Intent(this, CheckoutActivity::class.java).apply {
+                    putStringArrayListExtra("cartNames", cartNames)
+                    putIntegerArrayListExtra("cartQuantities", cartQuantities)
+                }
+                startActivity(intent)
+                cartPopup.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun setupBottomNavigation() {
+        NavigationHandler.setupBottomNavigation(this, bottomNavigation)
+        bottomNavigation.selectedItemId = R.id.navigation_items
+    }
+
+    private fun setupCartButton() {
+        findViewById<MaterialButton>(R.id.cartButton).setOnClickListener {
+            cartPopup.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setupTabLayout() {
         val tabLayout = findViewById<TabLayout>(R.id.storageTabs)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -90,17 +109,6 @@ class StorageActivity : AppCompatActivity() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-
-        // Setup Bottom Navigation
-        NavigationHandler.setupBottomNavigation(this, bottomNavigation)
-        
-        // Set the items tab as selected
-        bottomNavigation.selectedItemId = R.id.navigation_items
-
-        // Setup tombol cartButton
-        findViewById<MaterialButton>(R.id.cartButton).setOnClickListener {
-            cartPopup.visibility = View.VISIBLE
-        }
     }
 
     private fun showQuantityDialog(item: StorageItem) {

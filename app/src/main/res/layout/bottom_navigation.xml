@@ -5,6 +5,6 @@
     android:id="@+id/bottomNavigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_brown"
+    android:background="?android:attr/windowBackground"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:menu="@menu/bottom_navigation_menu" /> 
+    app:menu="@menu/bottom_nav_menu" /> 
