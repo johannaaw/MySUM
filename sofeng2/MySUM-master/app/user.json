@@ -1,0 +1,35 @@
+{
+  "users": {
+    "uid_123456": {
+      "name": "Sandy",
+      "organization": "sofeng",
+      "city": "jkt",
+      "email": "sandy@gmail.com",
+      "password": "12345678"
+    }
+  },
+  "storage": {
+    "1": {
+      "item1": {
+        "name": "Kursi",
+        "quantity": 10
+      },
+      "item2": {
+        "name": "Meja",
+        "quantity": 5
+      }
+    },
+    "2": {
+      "item1": {
+        "name": "Lemari",
+        "quantity": 3
+      }
+    },
+    "3": {
+      "item1": {
+        "name": "Laptop",
+        "quantity": 7
+      }
+    }
+  }
+}
